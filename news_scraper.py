@@ -13,6 +13,10 @@ import ssl
 from urllib.request import Request, urlopen
 import re
 
+#BE SURE TO DOWNLOAD THE SAME VERSION OF CROME DRIVER THAT CORRESPONDS TO YOUR CURRECT CROME BROWSER. 
+#TO SEE WHICH VERSION OF CROME YOU ARE USING CLICK ON THE THREE DOTS WIDGET IN THE TOP RIGHT CORNER OF YOUR BROWSER, SCROLL TO 'HELP" AND CLICK ON 'ABOUT GOOGLE CROME'.
+#WEBDRIVER CAN BE DOWNLOADED HERE: https://sites.google.com/chromium.org/driver/downloads?authuser=0
+
 query=input('Enter the word you wish to query: ')
 
 url='https://www.dawn.com/'

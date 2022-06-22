@@ -84,18 +84,14 @@ for link in lst_dawn:
     try:
         dates=link_soup.select('span[class*="timestamp"]')
         datun=str(dates[3]).split()
-        print(datun)
         quoted = re.compile('"([^"]*)"')
-        print(quoted)
         for value in quoted.findall(datun[3]):
             date_updated=value
             print(date_updated)
     except IndexError:
         dates=link_soup.select('span[class*="story__time"]')
         datun=str(dates).split()
-        print(datun)
         quoted = re.compile('="([^"]*)"')
-        print(quoted)
         for value in quoted.findall(datun[9]):
             date_updated=value
             print(date_updated)

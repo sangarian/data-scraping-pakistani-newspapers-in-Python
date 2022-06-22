@@ -4,4 +4,4 @@ The application developed in python prompts you to enter a topic of interest and
 Kindly use the application to scrape data ethically and only for research/non-commercial purposes. 
 
 
-![](output.csv.png)
+![](output_dawn.png)

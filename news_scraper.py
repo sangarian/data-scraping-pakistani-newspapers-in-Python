@@ -13,13 +13,13 @@ import ssl
 from urllib.request import Request, urlopen
 import re
 
-#BE SURE TO DOWNLOAD THE SAME VERSION OF CROME DRIVER THAT CORRESPONDS TO YOUR CURRECT CROME BROWSER. 
+#BE SURE TO DOWNLOAD THE VERSION OF CROME WEBDRIVER THAT CORRESPONDS TO YOUR CURRECT CROME BROWSER. 
 #TO SEE WHICH VERSION OF CROME YOU ARE USING CLICK ON THE THREE DOTS WIDGET IN THE TOP RIGHT CORNER OF YOUR BROWSER, SCROLL TO 'HELP" AND CLICK ON 'ABOUT GOOGLE CROME'.
 #WEBDRIVER CAN BE DOWNLOADED HERE: https://sites.google.com/chromium.org/driver/downloads?authuser=0
 
 query=input('Enter the word you wish to query: ')
 
-url='https://www.dawn.com/'
+url='https://www.dawn.com/search'
 
 #block the notification pop up window
 chrome_options = Options()
@@ -29,12 +29,15 @@ driver.implicitly_wait(10)
 #get the url
 driver.get(url)
 #click on the search bar
-driver.find_element_by_xpath('/html/body/header/div[3]/div/div[1]/ul/li/button/img').click()
+driver.find_element_by_xpath('/html/body/div[2]/div/div/div/div/form/div/input').click()
+time.sleep(10)
 #query the page and press enter
-driver.find_element_by_xpath('//*[@id="q"]').send_keys(query+'\n')
+driver.find_element_by_xpath('/html/body/div[2]/div/div/div/div/form/div/input').send_keys(query+'\n')
 time.sleep(5)
 lst_dawn=list()
-content=driver.find_elements_by_css_selector('.gsc-webResult.gsc-result')
+content=driver.find_elements_by_css_selector('.gsc-expansionArea')
+print(content)
+
 for link in content:
     fua=link.find_element_by_tag_name('a')
     lst_dawn.append(fua.get_attribute('href'))
@@ -42,6 +45,7 @@ for link in content:
 #loop through multiple pages and fetch the Data
 max_p=10
 for i in range(1,max_p):
+    time.sleep(10)
     pages=driver.find_elements_by_css_selector("div[class^='gsc-cursor-page']")
     driver.execute_script("(arguments[0]).click();", pages[i])
     time.sleep(3)
@@ -79,16 +83,20 @@ for link in lst_dawn:
     #GET THE DATE OF PUBLICATION
     try:
         dates=link_soup.select('span[class*="timestamp"]')
-        datun=str(dates[1]).split()
+        datun=str(dates[3]).split()
+        print(datun)
         quoted = re.compile('"([^"]*)"')
+        print(quoted)
         for value in quoted.findall(datun[3]):
             date_updated=value
             print(date_updated)
     except IndexError:
         dates=link_soup.select('span[class*="story__time"]')
-        datun=str(dates[0])
-        quoted = re.compile('>([^>]*)</')
-        for value in quoted.findall(datun):
+        datun=str(dates).split()
+        print(datun)
+        quoted = re.compile('="([^"]*)"')
+        print(quoted)
+        for value in quoted.findall(datun[9]):
             date_updated=value
             print(date_updated)
 
@@ -101,8 +109,12 @@ for link in lst_dawn:
     print('done')
 
     df = pd.DataFrame(records_dawn, columns=['url', 'title', 'date_updated', 'article_body'])
-    df.to_csv('dawn_articles.csv', index=False, encoding='utf-8')
+    df.to_csv('dawn_articles'+query+'.csv', index=False, encoding='utf-8')
+
  
+
+#NOW LETS LOOK FOR ARTICLES PUBLISHED ON THE TOPIC OF INEREST IN ANOTHER NEWSPAPER (THE NATION)
+
 url1='https://cse.google.com.pk/cse?cx=partner-pub-2495428981136420:9301056575&ie=UTF-8&q='+'query'+'&ref='
 driver = webdriver.Chrome()
 driver.get(url1)
@@ -176,6 +188,10 @@ for link in lst_nation:
         df1.to_csv('nation_articles.csv', index=False, encoding='utf-8')
         print(df1)
    
+
+
+#NOW LETS LOOK FOR ARTICLES PUBLISHED ON THE TOPIC OF INEREST IN ANOTHER NEWSPAPER (THE NEWS)
+
 
 url2='https://www.thenews.com.pk/'
 
